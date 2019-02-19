@@ -1,18 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Towers_of_Hanoi
 {
+    
+
     class Tower
     {
+        
+        
         private int[] disks;
         private int numDisks;
         private char ID;
 
-        public Tower (char ID)
+        public Tower(char ID)
         {
             this.ID = ID;
             disks = new int[64];
@@ -42,9 +47,9 @@ namespace Towers_of_Hanoi
                 //tried to add a bigger disk on a smaller one
                 Console.WriteLine("You tried to add a bigger disk on top of a smaller one.");
             }
-            
 
-    
+
+
         }
 
         public int Remove()
@@ -65,27 +70,56 @@ namespace Towers_of_Hanoi
                 numDisks--;
                 return topDisk;
             }
-            
+
         }
-            
-            
 
-    }
+        public void move(Tower Source, Tower Destination)
+        {
+            int temp = Source.Remove();
 
-    class Program
-    {
+            Destination.Add(temp);
+
+        }
+
+        public void solveTowers(int numDisks, Tower startPeg, Tower endPeg, Tower tempPeg)
+        {
+            if (numDisks == 1)
+            {
+                move(startPeg, endPeg);
+            }
+            else
+            {
+                solveTowers(numDisks - 1, startPeg, tempPeg, endPeg);
+                move(startPeg, endPeg);
+                Console.WriteLine("Move disk from " + startPeg + ' ' + endPeg);
+                solveTowers(numDisks - 1, tempPeg, endPeg, startPeg);
+
+            }
+        }
+        
+
         static void Main(string[] args)
         {
-            
-            Tower towerA = new Tower('A');
-            for (int i = 4; i > 0; i--)
-            {
-                towerA.Add(i);
-            }
-            Tower towerB = new Tower('B');
-            Tower towerC = new Tower('C');
 
             
+            Console.WriteLine("How many disks do you want to move?");
+            int n = Console.Read();
+
+            
+
+            Tower startPeg = new Tower('A');
+            Tower tempPeg = new Tower('B');
+            Tower endPeg = new Tower('C');
+
+            Stopwatch sw = Stopwatch.StartNew();
+            solveTowers(n, startPeg, endPeg, tempPeg);// The task to be timed goes here. . .
+            sw.Stop();
+            Console.WriteLine("Time taken: " + sw.ElapsedMilliseconds + "ms.");
+
+            
+
         }
+
+
     }
 }
